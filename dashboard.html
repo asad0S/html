@@ -1,101 +1,108 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>داشبورد داکتر - نوبت‌ها</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>صفحه اصلی - داکتر عبدالرحمن رضوانی</title>
   <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet" />
-  <link href="https://cdn.fontcdn.ir/Font/Persian/Shabnam/Shabnam.css" rel="stylesheet" />
   <style>
     body {
+      margin: 0;
       font-family: 'Vazir', sans-serif;
-      background: linear-gradient(to right, #f0f9ff, #e0f2fe);
+      background: url('./image/Capture.JPG') no-repeat center center / cover;
+      min-height: 100vh;
+      padding-top: 80px; /* جا برای هدر */
+      position: relative;
+      color: #333;
     }
-    h1, h2 {
-      font-family: 'Shabnam', sans-serif;
+
+    header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #333;
+      transition: color 0.3s;
+      padding: 6px 15px;
+      border-radius: 6px;
+    }
+
+    nav a:hover {
+      color: #0077cc;
+    }
+
+    /* دکمه بزرگ وسط صفحه */
+    .start-button {
+  position: absolute;
+  top: 40%; /* کمی بالاتر از وسط */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #0077cc;
+  color: white;
+  font-weight: 700;
+  font-size: 24px;
+  padding: 18px 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 119, 204, 0.6);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  z-index: 10;
+  user-select: none;
+  top: 60%;
+left: 50%;
+transform: translate(-50%, -50%);
+
+}
+
+    .start-button:hover {
+      background-color: #005fa3;
+      box-shadow: 0 8px 20px rgba(0, 95, 163, 0.8);
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .start-button {
+        font-size: 20px;
+        padding: 14px 30px;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen p-6">
+<body>
 
-  <header class="mb-6 flex justify-between items-center max-w-5xl mx-auto">
-    <h1 class="text-3xl font-bold text-blue-700">داشبورد داکتر عبدالرحمن رضوانی</h1>
-    <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-      خروج
-    </button>
+  <header>
+    <nav>
+      <a href="#">درخواست نوبت</a>
+      <a href="#">جستجو نوبت</a>
+      <a href="#">ورود</a>
+      <a href="#">درباره ما</a>
+    </nav>
   </header>
 
-  <main class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+  <button class="start-button">شروع کنید</button>
 
-    <h2 class="text-xl font-bold mb-4">نوبت‌های ثبت شده</h2>
-
-    <div id="appointmentsContainer" class="space-y-4 text-right">
-      <!-- نوبت‌ها اینجا نمایش داده می‌شوند -->
-    </div>
-
-    <p id="noAppointments" class="text-gray-500 text-center mt-8 hidden">
-      هنوز نوبتی ثبت نشده است.
-    </p>
-  </main>
-
-  <script>
-    // تابع بارگذاری نوبت‌ها از localStorage
-    function loadAppointments() {
-      const container = document.getElementById('appointmentsContainer');
-      const noAppointmentsMsg = document.getElementById('noAppointments');
-      container.innerHTML = '';
-
-      // ساختار localStorage انتظار می‌رود مثل این باشد:
-      // bookedSlots = {
-      //   "1403-02-10": [{ time: "08:00", patientName: "علی" }, ...],
-      //   ...
-      // }
-
-      const bookedSlots = JSON.parse(localStorage.getItem('bookedSlots') || '{}');
-      const dates = Object.keys(bookedSlots).sort();
-
-      if (dates.length === 0) {
-        noAppointmentsMsg.classList.remove('hidden');
-        return;
-      } else {
-        noAppointmentsMsg.classList.add('hidden');
-      }
-
-      dates.forEach(date => {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'border rounded p-4 shadow-sm bg-blue-50';
-
-        const dateHeader = document.createElement('h3');
-        dateHeader.textContent = `تاریخ: ${date}`;
-        dateHeader.className = 'font-bold mb-2 text-blue-800';
-
-        dayDiv.appendChild(dateHeader);
-
-        const list = document.createElement('ul');
-        list.className = 'list-disc list-inside space-y-1';
-
-        bookedSlots[date].forEach(slot => {
-          const item = document.createElement('li');
-          item.textContent = `ساعت: ${slot.time} - نام بیمار: ${slot.patientName || 'بدون نام'}`;
-          list.appendChild(item);
-        });
-
-        dayDiv.appendChild(list);
-        container.appendChild(dayDiv);
-      });
-    }
-
-    // بارگذاری نوبت‌ها هنگام ورود به صفحه
-    loadAppointments();
-
-    // دکمه خروج (خالی کردن session و برگشت به صفحه ورود)
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      // اگر چیزی ذخیره برای ورود گذاشتی، پاک کن
-      // localStorage.removeItem('loggedInDoctor'); // اگر استفاده کردی
-
-      window.location.href = 'login.html'; // بازگشت به صفحه ورود
-      
-    });
-  </script>
 </body>
 </html>
